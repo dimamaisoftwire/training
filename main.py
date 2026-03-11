@@ -1,11 +1,10 @@
-import csv
-from collections import defaultdict
 from account import AccountManager
 from file_parser import CSVParser
 
 def main():
     accounts = AccountManager()
-    transactions = CSVParser.parse_file("Transactions2014.csv")
+    csv_parser = CSVParser()
+    transactions = csv_parser.parse_file("Transactions2014.csv")
     accounts.add_transactions(transactions)
     parse_input(accounts)
 
@@ -19,12 +18,6 @@ def parse_input(accounts):
         accounts.list_account(account)
         return
     print("Unknown command")
-
-def list_all(accounts):
-    accounts.list_all()
-
-def list_account(accounts, name):
-    accounts.list_account(name)
 
 if __name__ == '__main__':
     main()
