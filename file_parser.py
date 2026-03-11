@@ -1,7 +1,10 @@
 from abc import ABC, abstractmethod
 import csv
+import logging
 
 from account import Transaction
+
+logging.basicConfig(filename='SupportBank.log', filemode='w', level=logging.DEBUG)
 
 class FileParser(ABC):
     @abstractmethod
