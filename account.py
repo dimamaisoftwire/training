@@ -66,7 +66,8 @@ class AccountManager:
 
     def list_account(self, name: str):
         if name not in self.accounts:
-            raise ValueError("Invalid account name")
+            print("Invalid account name")
+            return
 
         transactions = self.accounts[name].get_transactions()
         print(f"Name: {name} transactions: {len(transactions)}")
