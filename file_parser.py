@@ -31,11 +31,15 @@ class CSVParser(FileParser):
 
                 if not self.validate_date(date):
                     logging.error(f"Invalid date format in row {index}")
+                    logging.error(f"{row}")
                     continue
                 try:
                     amount = float(amount)
+                    if amount < 0:
+                        raise ValueError(f"Invalid amount {amount}")
                 except ValueError:
                     logging.error(f"Invalid amount in row {index}")
+                    logging.error(f"{row}")
                     continue
 
                 transactions.append(Transaction(date, from_person, to_person, narrative, amount))
