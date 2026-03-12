@@ -1,9 +1,6 @@
 from abc import ABC, abstractmethod
 import csv
 import logging
-import re
-
-from account import Transaction
 
 logging.basicConfig(filename='SupportBank.log', filemode='w', level=logging.DEBUG)
 
@@ -15,13 +12,12 @@ class FileParser(ABC):
 class CSVParser(FileParser):
     def parse_file(self, file_path: str):
         transactions = []
+        logging.info(f"Reading file {file_path}")
         with open(file_path, "r") as file:
+            logging.info(f"Parsing file {file_path}")
             reader = csv.reader(file)
             for index, row in enumerate(reader):
                 if index == 0:
                     continue
-                date, from_person, to_person, narrative, amount = row
-                amount = float(amount)
-
-                transactions.append(Transaction(date, from_person, to_person, narrative, amount))
+                transactions.append(row)
         return transactions
