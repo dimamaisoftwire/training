@@ -64,12 +64,13 @@ class AccountManager:
         reg = re.compile("^[0-9]{2}/[0-9]{2}/[0-9]{4}$")
         return reg.match(date)
 
-    def validate_transaction(self, transaction: str, index):
+    @staticmethod
+    def validate_transaction(transaction: str, index):
         if len(transaction) != 5:
             raise ValueError(f"Invalid transaction format in row {index}")
         date, from_person, to_person, narrative, amount = transaction
 
-        if not self.validate_date(date):
+        if not AccountManager.validate_date(date):
             logging.error(f"Invalid date format in row {index}")
             raise ValueError(f"Invalid date format in row {index}")
 
