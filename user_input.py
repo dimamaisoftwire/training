@@ -8,12 +8,12 @@ def parse_input(accounts : AccountManager):
         user_input = input().strip()
         if not user_input.lower().startswith("import "):
             print("Unknown command")
+            continue
         filename = user_input[7:].strip()
 
         try:
             parser = get_parser(filename)
             transactions = parser.parse_file(filename)
-            print(transactions)
             accounts.process_transactions(transactions)
             break
         except FileNotFoundError:
