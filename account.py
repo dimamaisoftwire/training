@@ -1,5 +1,7 @@
 from dataclasses import dataclass
 from typing import List
+import logging
+import re
 
 @dataclass
 class Transaction:
@@ -40,6 +42,7 @@ class AccountManager:
     def __init__(self):
         self.accounts = {}
         self.transactions = []
+        self.bogus_transactions = []
 
     def add_account(self, name: str):
         self.accounts[name] = Account(name)
@@ -56,9 +59,39 @@ class AccountManager:
 
         self.transactions.append(transaction)
 
-    def add_transactions(self, transactions: List[Transaction]):
-        for transaction in transactions:
-            self.add_transaction(transaction)
+    @staticmethod
+    def validate_date(date: str):
+        reg = re.compile("^[0-9]{2}/[0-9]{2}/[0-9]{4}$")
+        return reg.match(date)
+
+    def validate_transaction(self, transaction: str, index):
+        if len(transaction) != 5:
+            raise ValueError(f"Invalid transaction format in row {index}")
+        date, from_person, to_person, narrative, amount = transaction
+
+        if not self.validate_date(date):
+            logging.error(f"Invalid date format in row {index}")
+            raise ValueError(f"Invalid date format in row {index}")
+
+        amount = float(amount)
+        if amount < 0:
+            logging.error(f"Invalid amount {amount} in row {index}")
+            raise ValueError(f"Invalid amount {amount}")
+
+
+    def process_transactions(self, transactions: List[str]):
+        for index, row in enumerate(transactions):
+            try:
+                self.validate_transaction(row, index)
+            except ValueError:
+                self.bogus_transactions.append(row)
+                logging.error(f"Invalid data in row {index}")
+                continue
+
+            date, from_person, to_person, narrative, amount = row
+            amount = float(amount)
+
+            self.add_transaction(Transaction(date, from_person, to_person, narrative, amount))
 
     def list_all(self):
         for account in self.accounts.values():
@@ -73,3 +106,9 @@ class AccountManager:
         print(f"Name: {name} transactions: {len(transactions)}")
         for transaction in transactions:
             print(f"date: {transaction.date} from: {transaction.from_name} to: {transaction.to_name} narrative: {transaction.narrative}  amount: £{transaction.amount:.2f} ")
+
+    def list_bogus(self):
+        print(f"List of bogus transactions. Total count: {len(self.bogus_transactions)}")
+        for transaction in self.bogus_transactions:
+            print(transaction)
+
