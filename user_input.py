@@ -1,10 +1,10 @@
 import os
 from account import AccountManager
-from file_parser import CSVParser, JSONParser, FileParser
+from file_parser import CSVParser, JSONParser, XMLParser
 
 def parse_input(accounts : AccountManager):
     while True:
-        print("Please enter 'import [filename]'. Supported formats are: .csv, .json")
+        print("Please enter 'import [filename]'. Supported formats are: .csv, .json, .xml")
         user_input = input().strip()
         if not user_input.lower().startswith("import "):
             print("Unknown command")
@@ -44,5 +44,7 @@ def get_parser(filename):
         return CSVParser()
     elif ext == ".json":
         return JSONParser()
+    elif ext == ".xml":
+        return XMLParser()
     else:
         raise Exception("Unsupported format")

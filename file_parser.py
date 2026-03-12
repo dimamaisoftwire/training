@@ -2,7 +2,8 @@ import json
 from abc import ABC, abstractmethod
 import csv
 import logging
-from datetime import datetime
+from datetime import datetime, timedelta
+import xml.etree.ElementTree as ET
 
 logging.basicConfig(filename='SupportBank.log', filemode='w', level=logging.DEBUG)
 
@@ -42,3 +43,24 @@ class JSONParser(FileParser):
                 amount = row.get("Amount")
                 transactions.append([date, from_account, to_account, narrative, amount])
         return transactions
+
+class XMLParser(FileParser):
+    @staticmethod
+    def excel_to_date_string(serial):
+        return (datetime(1899, 12, 30) + timedelta(days=int(serial))).strftime("%d/%m/%Y")
+
+    def parse_file(self, file_path: str):
+        transactions = []
+        logging.info(f"Reading file {file_path}")
+        reader = ET.parse(file_path)
+        logging.info(f"Parsing file {file_path}")
+        root = reader.getroot()
+        for index, row in enumerate(root):
+            date = self.excel_to_date_string(row.get("Date"))
+            narrative = row[0].text
+            amount = row[1].text
+            from_account = row[2][0].text
+            to_account = row[2][1].text
+            transactions.append([date, from_account, to_account, narrative, amount])
+        return transactions
+
