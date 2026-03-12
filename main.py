@@ -4,7 +4,7 @@ from file_parser import CSVParser
 def main():
     accounts = AccountManager()
     csv_parser = CSVParser()
-    transactions = csv_parser.parse_file("Transactions2014.csv")
+    transactions = csv_parser.parse_file("DodgyTransactions2015.csv")
     accounts.process_transactions(transactions)
     parse_input(accounts)
 
