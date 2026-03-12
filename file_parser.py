@@ -12,35 +12,16 @@ class FileParser(ABC):
     def parse_file(self, file_path: str):
         pass
 
-    @staticmethod
-    def validate_date(date: str):
-        reg = re.compile("^[0-9]{2}/[0-9]{2}/[0-9]{4}$")
-        return reg.match(date)
-
 class CSVParser(FileParser):
     def parse_file(self, file_path: str):
         transactions = []
-        logging.info(f"Reading file {file_path}")
         with open(file_path, "r") as file:
-            logging.info(f"Parsing file {file_path}")
             reader = csv.reader(file)
             for index, row in enumerate(reader):
                 if index == 0:
                     continue
                 date, from_person, to_person, narrative, amount = row
-
-                if not self.validate_date(date):
-                    logging.error(f"Invalid date format in row {index}")
-                    logging.error(f"{row}")
-                    continue
-                try:
-                    amount = float(amount)
-                    if amount < 0:
-                        raise ValueError(f"Invalid amount {amount}")
-                except ValueError:
-                    logging.error(f"Invalid amount in row {index}")
-                    logging.error(f"{row}")
-                    continue
+                amount = float(amount)
 
                 transactions.append(Transaction(date, from_person, to_person, narrative, amount))
         return transactions
