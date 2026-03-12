@@ -59,13 +59,7 @@ class AccountManager:
 
         self.transactions.append(transaction)
 
-    @staticmethod
-    def validate_date(date: str):
-        reg = re.compile("^[0-9]{2}/[0-9]{2}/[0-9]{4}$")
-        return reg.match(date)
-
-    @staticmethod
-    def validate_transaction(transaction: str, index):
+    def process_transaction(self, transaction: List[str], index: int):
         if len(transaction) != 5:
             raise ValueError(f"Invalid transaction format in row {index}")
         date, from_person, to_person, narrative, amount = transaction
@@ -78,15 +72,21 @@ class AccountManager:
         if amount < 0:
             logging.error(f"Invalid amount {amount} in row {index}")
             raise ValueError(f"Invalid amount {amount}")
+        self.add_transaction(Transaction(date, from_person, to_person, narrative, amount))
 
 
-    def process_transactions(self, transactions: List[str]):
+    @staticmethod
+    def validate_date(date: str):
+        reg = re.compile("^[0-9]{2}/[0-9]{2}/[0-9]{4}$")
+        return reg.match(date)
+
+    def process_transactions(self, transactions: List[List[str]]):
         for index, row in enumerate(transactions):
             try:
-                self.validate_transaction(row, index)
+                self.process_transaction(row, index)
             except ValueError:
                 self.bogus_transactions.append(row)
-                logging.error(f"Invalid data in row {index}")
+                logging.error(f"{ValueError} in row {index}")
                 continue
 
             date, from_person, to_person, narrative, amount = row
