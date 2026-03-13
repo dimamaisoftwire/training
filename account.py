@@ -81,6 +81,8 @@ class AccountManager:
         return reg.match(date)
 
     def process_transactions(self, transactions: List[List[str]]):
+        self.accounts.clear()
+        self.transactions.clear()
         for index, row in enumerate(transactions):
             try:
                 self.process_transaction(row, index)
@@ -95,10 +97,16 @@ class AccountManager:
             self.add_transaction(Transaction(date, from_person, to_person, narrative, amount))
 
     def list_all(self):
+        if not self.accounts or not self.transactions:
+            print("No accounts/transactions found")
+            return
         for account in self.accounts.values():
             print(account.get_info())
 
     def list_account(self, name: str):
+        if not self.accounts or not self.transactions:
+            print("No accounts/transactions found")
+            return
         if name not in self.accounts:
             print("Invalid account name")
             return
@@ -109,6 +117,9 @@ class AccountManager:
             print(f"date: {transaction.date} from: {transaction.from_name} to: {transaction.to_name} narrative: {transaction.narrative}  amount: £{transaction.amount:.2f} ")
 
     def list_bogus(self):
+        if not self.accounts or not self.transactions:
+            print("No accounts/transactions found")
+            return
         print(f"List of bogus transactions. Total count: {len(self.bogus_transactions)}")
         for transaction in self.bogus_transactions:
             print(transaction)
