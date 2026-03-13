@@ -1,10 +1,14 @@
 from account import AccountManager
-from user_input import parse_input
-
+from command_handler import CommandHandler
 
 def main():
     accounts = AccountManager()
-    parse_input(accounts)
+    command_handler = CommandHandler(accounts)
+
+    command_handler.show_command_info()
+    while True:
+        command = input()
+        command_handler.parse_command(command)
 
 if __name__ == '__main__':
     main()
