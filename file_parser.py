@@ -57,10 +57,10 @@ class XMLParser(FileParser):
         root = reader.getroot()
         for index, row in enumerate(root):
             date = self.excel_to_date_string(row.get("Date"))
-            narrative = row[0].text
-            amount = row[1].text
-            from_account = row[2][0].text
-            to_account = row[2][1].text
+            narrative = row.findtext("Description")
+            amount = row.findtext("Value")
+            from_account = row.find("Parties").findtext("From")
+            to_account = row.find("Parties").findtext("To")
             transactions.append([date, from_account, to_account, narrative, amount])
         return transactions
 
