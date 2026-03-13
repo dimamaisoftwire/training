@@ -8,7 +8,7 @@ def main():
     command_handler.show_command_info()
     while True:
         command = input()
-        command_handler.parse_command(command)
+        command_handler.process_command(command)
 
 if __name__ == '__main__':
     main()

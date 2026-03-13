@@ -14,7 +14,7 @@ class CommandHandler:
         print("list bogus - to list bogus transactions")
         print("list [name] - to list all transactions with this name")
 
-    def parse_command(self, user_input: str):
+    def process_command(self, user_input: str):
         user_input = user_input.strip()
         if user_input.lower().startswith("list all"):
             self.account_manager.list_all()
